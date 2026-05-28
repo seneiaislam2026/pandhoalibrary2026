@@ -507,224 +507,266 @@ export default function StudyPractice() {
     ? filteredContents.filter(item => getSubjectKey(item.title, item.description) === selectedSubject)
     : filteredContents;
 
+  // Helper to check if class is fully selected
+  const isClassSelected = selectedCategory && (selectedCategory !== 'class-6-8' || selectedSubClass !== null);
+
+  const menuItems = [
+    { 
+      id: 'question_bank', 
+      name: 'প্রশ্নব্যাংক', 
+      icon: BookMarked, 
+      activeBorder: 'border-sky-400', 
+      activeShadow: 'shadow-sky-500/20',
+      activeBgGradient: 'from-sky-50/50 to-transparent dark:from-sky-900/10',
+      activeIconBg: 'bg-sky-500 text-white',
+      inactiveIconBg: 'bg-sky-50 dark:bg-sky-900/30 text-sky-500 group-hover:bg-sky-100 dark:group-hover:bg-sky-900/50',
+      activeText: 'text-sky-700 dark:text-sky-300'
+    },
+    { 
+      id: 'mock_exam', 
+      name: 'মক পরীক্ষা', 
+      icon: Layers, 
+      activeBorder: 'border-rose-400', 
+      activeShadow: 'shadow-rose-500/20',
+      activeBgGradient: 'from-rose-50/50 to-transparent dark:from-rose-900/10',
+      activeIconBg: 'bg-rose-500 text-white',
+      inactiveIconBg: 'bg-rose-50 dark:bg-rose-900/30 text-rose-500 group-hover:bg-rose-100 dark:group-hover:bg-rose-900/50',
+      activeText: 'text-rose-700 dark:text-rose-300'
+    },
+    { 
+      id: 'model_test', 
+      name: 'মডেল টেস্ট', 
+      icon: Target, 
+      activeBorder: 'border-violet-400', 
+      activeShadow: 'shadow-violet-500/20',
+      activeBgGradient: 'from-violet-50/50 to-transparent dark:from-violet-900/10',
+      activeIconBg: 'bg-violet-500 text-white',
+      inactiveIconBg: 'bg-violet-50 dark:bg-violet-900/30 text-violet-500 group-hover:bg-violet-100 dark:group-hover:bg-violet-900/50',
+      activeText: 'text-violet-700 dark:text-violet-300'
+    },
+    { 
+      id: 'my_profile', 
+      name: 'আমার প্রোফাইল', 
+      icon: User, 
+      activeBorder: 'border-amber-400', 
+      activeShadow: 'shadow-amber-500/20',
+      activeBgGradient: 'from-amber-50/50 to-transparent dark:from-amber-900/10',
+      activeIconBg: 'bg-amber-500 text-white',
+      inactiveIconBg: 'bg-amber-50 dark:bg-amber-900/30 text-amber-500 group-hover:bg-amber-100 dark:group-hover:bg-amber-900/50',
+      activeText: 'text-amber-700 dark:text-amber-300'
+    }
+  ];
+
   return (
     <div className="min-h-screen bg-slate-50/50 dark:bg-slate-900/40 pb-20 font-bengali">
       {/* 1. Streak Widget Banner */}
-      <div className="bg-amber-500/10 dark:bg-amber-500/5 border border-amber-500/20 max-w-5xl mx-auto mt-4 px-4 sm:px-6 py-3.5 rounded-3xl flex flex-col sm:flex-row gap-3 items-center justify-between shadow-sm relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-bl-full pointer-events-none" />
-        <div className="flex items-center gap-2.5 text-center sm:text-left">
-          <span className="text-xl">🔥</span>
-          <p className="text-[12px] sm:text-[13px] font-extrabold text-amber-800 dark:text-amber-400">
-            কখনোই আর স্ট্রিক মিস করতে না চাইলে পড়ার দিনলিপি এবং দৈনিক লক্ষ্য নিয়মিত আপডেট করো!
-          </p>
+      <div className="relative max-w-5xl mx-auto mt-6 px-5 sm:px-8 py-5 sm:py-6 rounded-[2rem] bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 border border-orange-200/60 dark:border-orange-800/40 shadow-sm flex flex-col sm:flex-row gap-5 items-center justify-between overflow-hidden">
+        <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-bl from-orange-400/10 to-transparent rounded-bl-[100%] pointer-events-none" />
+        <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-amber-400/10 rounded-full blur-2xl pointer-events-none" />
+        
+        <div className="flex items-center gap-4 text-center sm:text-left relative z-10">
+          <div className="w-12 h-12 bg-white dark:bg-slate-800 rounded-2xl shadow-sm flex items-center justify-center text-2xl shrink-0 border border-orange-100 dark:border-orange-900/30">
+            🔥
+          </div>
+          <div>
+            <h3 className="text-[15px] sm:text-[17px] font-black text-orange-900 dark:text-orange-400 font-bengali leading-snug">
+              কখনোই আর স্ট্রিক মিস করো না!
+            </h3>
+            <p className="text-xs sm:text-[13px] font-bold text-orange-700/80 dark:text-orange-500/80 mt-1 uppercase tracking-wide">
+              পড়ার দিনলিপি এবং দৈনিক লক্ষ্য নিয়মিত আপডেট করো
+            </p>
+          </div>
         </div>
+        
         <button 
           onClick={() => {
             const el = document.getElementById('academic-goals-input');
             el?.scrollIntoView({ behavior: 'smooth' });
             el?.focus();
           }}
-          className="shrink-0 text-[11px] sm:text-xs font-black bg-amber-600 hover:bg-amber-500 text-white rounded-xl px-4 py-2 shadow-sm transition active:scale-95 cursor-pointer"
+          className="shrink-0 relative z-10 text-xs sm:text-[13px] font-black bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white rounded-xl sm:rounded-2xl px-6 py-3 shadow-lg shadow-orange-500/20 transition-all active:scale-95 cursor-pointer flex items-center gap-2 group"
         >
-          দিনের লক্ষ্য নির্ধারণ →
+          দিনের লক্ষ্য নির্ধারণ
+          <div className="bg-white/20 p-1 rounded-full group-hover:translate-x-1 transition-transform">
+            <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
+          </div>
         </button>
       </div>
 
-
-      {/* 3. Four Side-by-Side (Pasha Pashi) Colorful Menu Buttons */}
-      <div className="max-w-5xl mx-auto px-4 mt-6">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          {/* Btn 1: Question Bank */}
-          <button
-            onClick={() => {
-              setActiveMenuTab('question_bank');
-              setSelectedSubject(null);
-            }}
-            className={`cursor-pointer rounded-[22px] border p-4 transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 relative overflow-hidden ${
-              activeMenuTab === 'question_bank'
-                ? 'bg-amber-500 text-white border-amber-400 shadow-lg shadow-amber-500/20 scale-102 font-black'
-                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700/80 hover:border-amber-300 dark:hover:border-amber-900/50 text-slate-700 dark:text-slate-200 hover:shadow-sm'
-            }`}
-          >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-inner ${activeMenuTab === 'question_bank' ? 'bg-white/20' : 'bg-amber-50 dark:bg-amber-950/30'}`}>
-              <BookMarked className={`w-5 h-5 ${activeMenuTab === 'question_bank' ? 'text-white' : 'text-amber-500'}`} />
-            </div>
-            <span className="text-[13px] font-black tracking-wide font-bengali">প্রশ্নব্যাংক</span>
-          </button>
-
-          {/* Btn 2: Mock Exam */}
-          <button
-            onClick={() => {
-              setActiveMenuTab('mock_exam');
-              setSelectedSubject(null);
-            }}
-            className={`cursor-pointer rounded-[22px] border p-4 transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 relative overflow-hidden ${
-              activeMenuTab === 'mock_exam'
-                ? 'bg-rose-500 text-white border-rose-400 shadow-lg shadow-rose-500/20 scale-102 font-black'
-                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700/80 hover:border-rose-300 dark:hover:border-rose-900/50 text-slate-700 dark:text-slate-200 hover:shadow-sm'
-            }`}
-          >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-inner ${activeMenuTab === 'mock_exam' ? 'bg-white/20' : 'bg-rose-50 dark:bg-rose-950/30'}`}>
-              <Layers className={`w-5 h-5 ${activeMenuTab === 'mock_exam' ? 'text-white' : 'text-rose-500'}`} />
-            </div>
-            <span className="text-[13px] font-black tracking-wide font-bengali">মক পরীক্ষা</span>
-          </button>
-
-          {/* Btn 3: Model Test */}
-          <button
-            onClick={() => {
-              setActiveMenuTab('model_test');
-              setSelectedSubject(null);
-            }}
-            className={`cursor-pointer rounded-[22px] border p-4 transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 relative overflow-hidden ${
-              activeMenuTab === 'model_test'
-                ? 'bg-violet-600 text-white border-violet-500 shadow-lg shadow-violet-500/20 scale-102 font-black'
-                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700/80 hover:border-violet-300 dark:hover:border-violet-900/50 text-slate-700 dark:text-slate-200 hover:shadow-sm'
-            }`}
-          >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-inner ${activeMenuTab === 'model_test' ? 'bg-white/20' : 'bg-violet-50 dark:bg-violet-950/30'}`}>
-              <Target className={`w-5 h-5 ${activeMenuTab === 'model_test' ? 'text-white' : 'text-violet-500'}`} />
-            </div>
-            <span className="text-[13px] font-black tracking-wide font-bengali">মডেল টেস্ট</span>
-          </button>
-
-          {/* Btn 4: My Profile */}
-          <button
-            onClick={() => {
-              setActiveMenuTab('my_profile');
-              setSelectedSubject(null);
-            }}
-            className={`cursor-pointer rounded-[22px] border p-4 transition-all duration-200 flex flex-col items-center justify-center text-center gap-2 relative overflow-hidden ${
-              activeMenuTab === 'my_profile'
-                ? 'bg-sky-500 text-white border-sky-400 shadow-lg shadow-sky-500/20 scale-102 font-black'
-                : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700/80 hover:border-sky-305 dark:hover:border-sky-900/50 text-slate-700 dark:text-slate-200 hover:shadow-sm'
-            }`}
-          >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-inner ${activeMenuTab === 'my_profile' ? 'bg-white/20' : 'bg-sky-50 dark:bg-sky-950/30'}`}>
-              <User className={`w-5 h-5 ${activeMenuTab === 'my_profile' ? 'text-white' : 'text-sky-500'}`} />
-            </div>
-            <span className="text-[13px] font-black tracking-wide font-bengali">আমার পাঠচর্চা প্রোফাইল</span>
-          </button>
+      {/* Dynamic Main Flow */}
+      {!isClassSelected ? (
+        <div className="max-w-5xl mx-auto px-4 mt-8 pb-12">
+          <AnimatePresence mode="wait">
+            {!selectedCategory ? (
+              <motion.div
+                key="cat-select"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                className="text-center space-y-8"
+              >
+                <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-[2rem] p-8 shadow-sm max-w-sm sm:max-w-md mx-auto">
+                  <div className="w-16 h-16 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">
+                    🎓
+                  </div>
+                  <h3 className="font-black text-slate-800 dark:text-slate-200 text-lg font-bengali">তোমার একাডেমিক স্তর চুজ করো</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">স্তরের কন্টেন্ট এবং প্রশ্ন ব্যাংক দেখতে ক্লাস সিলেক্ট করো!</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                  {categories.map((cat, idx) => {
+                    const Icon = cat.icon;
+                    return (
+                      <motion.button
+                        key={cat.id}
+                        onClick={() => {
+                          setSelectedCategory(cat.id);
+                          setSelectedSubject(null);
+                        }}
+                        whileHover={{ scale: 1.02, y: -2 }}
+                        whileTap={{ scale: 0.98 }}
+                        className={`w-full overflow-hidden bg-gradient-to-br ${cat.color} bg-white dark:bg-slate-800 border ${cat.borderColor} p-5 rounded-3xl shadow-sm hover:shadow-lg transition-all flex flex-col items-start text-left cursor-pointer group`}
+                      >
+                        <div className={`w-12 h-12 rounded-[1rem] flex items-center justify-center ${cat.iconBg} ${cat.textColor} mb-4 shadow-inner group-hover:scale-110 transition-transform`}>
+                          <Icon className="w-6 h-6" />
+                        </div>
+                        <div>
+                          <h3 className="font-extrabold text-slate-800 dark:text-slate-100 text-base tracking-wide font-bengali leading-snug">
+                            {cat.name}
+                          </h3>
+                          <p className="text-[13px] text-slate-500 dark:text-slate-400 font-semibold font-bengali mt-1.5 leading-relaxed line-clamp-2">
+                            {cat.description}
+                          </p>
+                        </div>
+                        <div className="mt-4 w-full flex justify-end">
+                           <div className="bg-white dark:bg-slate-700 p-2 rounded-full border border-slate-100 dark:border-slate-600 shadow-sm opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 transition-all">
+                             <ArrowLeft className="w-4 h-4 rotate-180 text-slate-600 dark:text-slate-300" />
+                           </div>
+                        </div>
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </motion.div>
+            ) : (selectedCategory === 'class-6-8' && !selectedSubClass) ? (
+              <motion.div
+                key="subcat-select"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                className="text-center space-y-8"
+              >
+                <div className="flex items-center mb-2">
+                  <button
+                    onClick={() => setSelectedCategory(null)}
+                    className="px-4 py-2.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-extrabold rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm transition active:scale-95 cursor-pointer flex items-center justify-center shrink-0 gap-2 text-sm"
+                  >
+                    <ArrowLeft className="w-4 h-4" /> পিছে যান
+                  </button>
+                </div>
+                <div className="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 rounded-[2rem] p-8 shadow-sm max-w-sm mx-auto">
+                  <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">
+                    📈
+                  </div>
+                  <h3 className="font-black text-slate-800 dark:text-slate-200 text-lg font-bengali">পছন্দের শ্রেণী নির্ধারণ করো</h3>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 font-medium">শ্রেণী সিলেক্ট করলে বিষয়ভিত্তিক সুন্দর গ্রিড দেখতে পারবে!</p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
+                  {['class-6', 'class-7', 'class-8'].map((clsKey, cIdx) => (
+                    <motion.button
+                      key={clsKey}
+                      onClick={() => {
+                        setSelectedSubClass(clsKey);
+                        setSelectedSubject(null);
+                      }}
+                      whileHover={{ scale: 1.03, y: -4 }}
+                      whileTap={{ scale: 0.98 }}
+                      className="w-full relative h-[140px] overflow-hidden bg-white dark:bg-slate-800 rounded-[2rem] border border-slate-200 dark:border-slate-700 shadow-sm hover:shadow-lg hover:border-emerald-200 dark:hover:border-emerald-800 flex flex-col items-center justify-center text-center cursor-pointer group transition-all"
+                    >
+                      <div className="absolute -right-4 -bottom-4 select-none font-sans font-black text-[10rem] leading-none text-transparent bg-clip-text bg-gradient-to-tr from-emerald-500/20 to-sky-400/20 opacity-50 group-hover:scale-110 transition-transform origin-bottom-right">
+                        {clsKey === 'class-6' ? '6' : clsKey === 'class-7' ? '7' : '8'}
+                      </div>
+                      <div className="relative z-10 font-bengali">
+                        <span className="font-extrabold text-slate-800 dark:text-slate-100 text-xl group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
+                          {clsKey === 'class-6' ? 'ক্লাস ৬ (ষষ্ঠ)' : clsKey === 'class-7' ? 'ক্লাস ৭ (সপ্তম)' : 'ক্লাস ৮ (অষ্টম)'}
+                        </span>
+                      </div>
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            ) : null}
+          </AnimatePresence>
+        </div>
+      ) : (
+        <>
+          {/* 3. Four Side-by-Side (Pasha Pashi) Colorful Menu Buttons */}
+          <div className="max-w-5xl mx-auto px-4 mt-8">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
+              {menuItems.map((item) => (
+                 <button
+              key={item.id}
+              onClick={() => {
+                setActiveMenuTab(item.id as any);
+                setSelectedSubject(null);
+              }}
+              className={`group cursor-pointer rounded-[1.75rem] border p-5 sm:p-6 transition-all duration-300 flex flex-col items-center justify-center text-center gap-3.5 relative overflow-hidden ${
+                activeMenuTab === item.id
+                  ? `bg-white dark:bg-slate-800 ${item.activeBorder} ${item.activeShadow} scale-[1.02]`
+                  : 'bg-white/80 dark:bg-slate-800/80 border-slate-200/80 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-md hover:-translate-y-1 backdrop-blur-sm'
+              }`}
+            >
+              {activeMenuTab === item.id && (
+                <motion.div layoutId="activeTabIndicatorBg" className={`absolute inset-0 bg-gradient-to-b ${item.activeBgGradient} pointer-events-none`} />
+              )}
+              <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors duration-300 relative z-10 ${
+                activeMenuTab === item.id ? item.activeIconBg : item.inactiveIconBg
+              }`}>
+                <item.icon className={`w-6 h-6 ${activeMenuTab === item.id ? 'opacity-100' : 'opacity-80'}`} />
+              </div>
+              <span className={`text-[13px] sm:text-[15px] font-black tracking-wide font-bengali relative z-10 ${
+                activeMenuTab === item.id ? item.activeText : 'text-slate-600 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200'
+              }`}>{item.name}</span>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* 4. Leaderboard Unlock Banner */}
-      <div className="max-w-5xl mx-auto px-4 mt-6">
-        <div className="bg-slate-100/85 dark:bg-slate-800 border border-slate-200/50 dark:border-slate-700 p-4 rounded-[1.5rem] flex items-center justify-between text-slate-700 dark:text-slate-300 text-xs sm:text-sm shadow-inner">
-          <div className="flex items-center gap-2 font-extrabold max-w-md">
-            <span>{attempts.length > 0 ? '🔓' : '🔒'}</span>
-            <span>
-              {attempts.length > 0 
-                ? 'অভিনন্দন! তুমি কুইজ পরীক্ষায় অংশ নিয়ে লিডারবোর্ড আনলক করেছ।' 
-                : 'লিডারবোর্ড আনলক করতে নিচের যেকোনো একটি কুইজ পরীক্ষায় অংশ নাও!'}
-            </span>
-          </div>
-          <div className="flex items-center gap-1.5 font-bold text-slate-500">
-            <TrendingUp className="w-4 h-4 text-slate-400" />
-            <span>অগ্রগতি</span>
+      {/* 4. Leaderboard Unlock Banner (Shows after class/subject selection or other tabs) */}
+      {(activeMenuTab !== 'question_bank' || (selectedCategory !== null && (selectedCategory !== 'class-6-8' || selectedSubClass !== null))) && (
+        <div className="max-w-5xl mx-auto px-4 mt-8">
+          <div className="bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80 p-4 sm:p-5 rounded-2xl flex flex-col sm:flex-row items-center gap-4 justify-between text-slate-700 dark:text-slate-300 shadow-sm transition-all hover:shadow-md">
+            <div className="flex items-center gap-3.5 font-extrabold max-w-lg w-full text-center sm:text-left">
+              <div className={`shrink-0 p-2.5 rounded-xl ${attempts.length > 0 ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-slate-100 text-slate-500 dark:bg-slate-700'}`}>
+                {attempts.length > 0 ? <CheckCircle2 className="w-5 h-5" /> : <AlertCircle className="w-5 h-5" />}
+              </div>
+              <span className="text-[13px] sm:text-sm leading-relaxed">
+                {attempts.length > 0 
+                  ? 'অভিনন্দন! তুমি কুইজ পরীক্ষায় অংশ নিয়ে লিডারবোর্ড আনলক করেছ।' 
+                  : 'লিডারবোর্ড আনলক করতে নিচের যেকোনো একটি কুইজ পরীক্ষায় অংশ নাও!'}
+              </span>
+            </div>
+            <button className="flex items-center justify-center gap-2 w-full sm:w-auto font-black text-indigo-700 dark:text-indigo-400 hover:text-indigo-800 hover:bg-indigo-100 px-5 py-2.5 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl transition-colors cursor-pointer shrink-0">
+              <TrendingUp className="w-4 h-4" />
+              <span className="text-sm">অগ্রগতি দেখুন</span>
+            </button>
           </div>
         </div>
-      </div>
+      )}
 
       {/* 5. Central Dynamic Dashboard Area */}
-      <div className="max-w-5xl mx-auto px-4 mt-8 pb-12">
+      <div className="max-w-5xl mx-auto px-4 mt-10 pb-12">
         <AnimatePresence mode="wait">
           {/* TAB A: QUESTION BANK FLOATING */}
           {activeMenuTab === 'question_bank' && (
             <motion.div
               key="qb-menu-container"
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="space-y-6"
+              exit={{ opacity: 0, y: -15 }}
+              className="space-y-8"
             >
-              {/* If no core category selected: Choose Category */}
-              {!selectedCategory ? (
-                <div className="text-center space-y-6">
-                  <div className="bg-white/60 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-3xl p-6 shadow-sm max-w-sm sm:max-w-md mx-auto">
-                    <span className="text-xl">🎓</span>
-                    <h3 className="font-extrabold text-slate-800 dark:text-slate-200 mt-2 text-base font-bengali">তোমার একাডেমিক স্তর চুজ করো</h3>
-                    <p className="text-xs text-slate-400 mt-1">স্তরের কন্টেন্ট এবং প্রশ্ন ব্যাংক দেখতে ক্লাস সিলেক্ট করো!</p>
-                  </div>
-                  <div className="space-y-4 max-w-sm sm:max-w-md mx-auto">
-                    {categories.map((cat, idx) => {
-                      const Icon = cat.icon;
-                      return (
-                        <motion.button
-                          key={cat.id}
-                          onClick={() => {
-                            setSelectedCategory(cat.id);
-                            setSelectedSubject(null);
-                          }}
-                          whileHover={{ scale: 1.02, x: 4 }}
-                          whileTap={{ scale: 0.98 }}
-                          className={`w-full overflow-hidden bg-gradient-to-r ${cat.color} bg-white dark:bg-slate-800 border-2 ${cat.borderColor} p-4 rounded-2xl md:rounded-3xl shadow-sm hover:shadow-md transition-all flex items-center justify-between group text-left cursor-pointer`}
-                        >
-                          <div className="flex items-center gap-4 flex-1 min-w-0">
-                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${cat.iconBg} ${cat.textColor} group-hover:scale-110 transition-transform shadow-sm shrink-0`}>
-                              <Icon className="w-6 h-6" />
-                            </div>
-                            <div className="flex-1 min-w-0 pr-2">
-                              <h3 className="font-extrabold text-slate-800 dark:text-slate-100 text-[15px] sm:text-base tracking-wide font-bengali leading-snug">
-                                {cat.name}
-                              </h3>
-                              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium font-bengali mt-0.5 leading-relaxed">
-                                {cat.description}
-                              </p>
-                            </div>
-                          </div>
-                          <div className="bg-white/95 dark:bg-slate-700/60 p-1.5 rounded-full border border-slate-100 dark:border-slate-700 shadow-sm opacity-60 group-hover:opacity-100 transition-all ml-2 shrink-0">
-                            <ArrowLeft className="w-4 h-4 rotate-180" />
-                          </div>
-                        </motion.button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : (selectedCategory === 'class-6-8' && !selectedSubClass) ? (
-                /* Subclass selecting for class 6-8 */
-                <div className="text-center space-y-6">
-                  <div className="flex items-center mb-4">
-                    <button
-                      onClick={() => setSelectedCategory(null)}
-                      className="p-2.5 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 font-bold rounded-xl border border-slate-100 dark:border-slate-700 shadow-sm transition active:scale-95 cursor-pointer flex items-center justify-center shrink-0"
-                    >
-                      <ArrowLeft className="w-4 h-4" /> পিছে যান
-                    </button>
-                  </div>
-                  <div className="bg-white/60 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 rounded-3xl p-6 shadow-sm max-w-sm mx-auto">
-                    <span className="text-xl">📈</span>
-                    <h3 className="font-extrabold text-slate-800 dark:text-slate-200 mt-2 text-base font-bengali">পছন্দের শ্রেণী নির্ধারণ করো</h3>
-                    <p className="text-xs text-slate-400 mt-1">শ্রেণী সিলেক্ট করলে বিষয়ভিত্তিক সুন্দর গ্রিড দেখতে পারবে!</p>
-                  </div>
-                  <div className="space-y-4 max-w-sm mx-auto">
-                    {['class-6', 'class-7', 'class-8'].map((clsKey, cIdx) => (
-                      <motion.button
-                        key={clsKey}
-                        onClick={() => {
-                          setSelectedSubClass(clsKey);
-                          setSelectedSubject(null);
-                        }}
-                        whileHover={{ scale: 1.02, y: -2 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="w-full relative h-[5.5rem] overflow-hidden bg-white dark:bg-slate-800 rounded-3xl border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between text-left cursor-pointer group"
-                      >
-                        <div className="absolute -left-1 -bottom-4 select-none font-sans font-black text-[8.5rem] leading-none text-transparent bg-clip-text bg-gradient-to-tr from-indigo-500 to-emerald-400 opacity-90 group-hover:scale-105 transition-transform origin-bottom-left">
-                          {clsKey === 'class-6' ? '6' : clsKey === 'class-7' ? '7' : '8'}
-                        </div>
-                        <div className="flex-1" />
-                        <div className="pr-8 pl-4 py-4 text-right z-10 font-bengali">
-                          <span className="font-extrabold text-slate-800 dark:text-slate-100 text-lg sm:text-xl">
-                            {clsKey === 'class-6' ? 'ক্লাস ৬ (ষষ্ঠ)' : clsKey === 'class-7' ? 'ক্লাস ৭ (সপ্তম)' : 'ক্লাস ৮ (অষ্টম)'}
-                          </span>
-                        </div>
-                      </motion.button>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                /* CLASS DETAILS AND SUBJECTS GRID */
-                <div>
+              {/* CLASS DETAILS AND SUBJECTS GRID */}
+              <div>
                   {selectedSubject === null ? (
                     /* The subjects grid matching image_2 visually! */
                     <StudySubjectsGrid
@@ -948,7 +990,6 @@ export default function StudyPractice() {
                     </div>
                   )}
                 </div>
-              )}
             </motion.div>
           )}
 
@@ -1215,6 +1256,8 @@ export default function StudyPractice() {
           )}
         </AnimatePresence>
       </div>
+     </>
+     )}
     </div>
   );
 }
