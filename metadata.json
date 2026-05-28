@@ -1,0 +1,10 @@
+{
+  "name": "পানধোয়া উন্মুক্ত পাঠাগার | Pandhoa Public Library",
+  "description": "পানধোয়া উন্মুক্ত পাঠাগার - একটি আধুনিক ও উন্মুক্ত পাঠাগার ব্যবস্থা।",
+  "requestFramePermissions": [
+    "camera"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

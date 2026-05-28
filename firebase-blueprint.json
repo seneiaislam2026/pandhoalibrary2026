@@ -1,0 +1,327 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Application user profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "username": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "reader"] },
+        "status": { "type": "string", "enum": ["active", "pending", "suspended"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "memberId": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "avatar": { "type": "string" },
+        "borrowBlocked": { "type": "boolean" },
+        "blockedReason": { "type": "string" }
+      },
+      "required": ["id", "name", "username", "role", "status"]
+    },
+    "Book": {
+      "title": "Book",
+      "description": "Library book",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "category": { "type": "string" },
+        "status": { "type": "string", "enum": ["Available", "Issued", "Lost"] },
+        "bookCode": { "type": "string" },
+        "cover": { "type": "string" },
+        "description": { "type": "string" },
+        "review": { "type": "string" },
+        "price": { "type": "number" },
+        "isForSale": { "type": "boolean" }
+      },
+      "required": ["id", "title", "author", "category", "status", "bookCode"]
+    },
+    "Issue": {
+      "title": "Issue",
+      "description": "Book issue record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "bookId": { "type": "string" },
+        "userId": { "type": "string" },
+        "issueDate": { "type": "string", "format": "date-time" },
+        "expectedReturnDate": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["Issued", "Returned", "Overdue"] },
+        "returnDate": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "bookId", "userId", "issueDate", "status"]
+    },
+    "Donation": {
+      "title": "Donation",
+      "description": "Donation record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "amount": { "type": "number" },
+        "date": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["Pending", "Completed", "Failed"] },
+        "trxId": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "name", "amount", "date", "status"]
+    },
+    "DonorMember": {
+      "title": "Donor Member",
+      "description": "Recurring donor record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "monthlyAmount": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string" }
+      }
+    },
+    "Finance": {
+      "title": "Finance",
+      "description": "Financial transaction",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "type": { "type": "string", "enum": ["income", "expense"] },
+        "amount": { "type": "number" },
+        "description": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "category": { "type": "string" }
+      },
+      "required": ["id", "type", "amount", "date"]
+    },
+    "TeamMember": {
+      "title": "Team Member",
+      "description": "Library staff member",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "role": { "type": "string" },
+        "contact": { "type": "string" },
+        "image": { "type": "string" },
+        "order": { "type": "number" }
+      },
+      "required": ["id", "name", "role"]
+    },
+    "Post": {
+      "title": "Post",
+      "description": "Blog or announcement post",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "image": { "type": "string" },
+        "category": { "type": "string" }
+      },
+      "required": ["id", "title", "content", "date"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Private message or contact message",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "fromUserId": { "type": "string" },
+        "fromName": { "type": "string" },
+        "toUserId": { "type": "string" },
+        "toName": { "type": "string" },
+        "subject": { "type": "string" },
+        "message": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["unread", "read"] },
+        "type": { "type": "string" }
+      },
+      "required": ["message", "date"]
+    },
+    "ShopBook": {
+      "title": "Shop Book",
+      "description": "Book for sale in the shop",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "price": { "type": "number" },
+        "cover": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "stock": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "price"]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Book purchase order",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerPhone": { "type": "string" },
+        "customerAddress": { "type": "string" },
+        "userId": { "type": "string" },
+        "items": { "type": "array" },
+        "totalPrice": { "type": "number" },
+        "status": { "type": "string", "enum": ["Pending", "Confirmed", "Processing", "Shipping", "Delivered", "Cancelled"] },
+        "deliveryType": { "type": "string", "enum": ["COD", "LibraryPickup"] },
+        "expectedDeliveryDate": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "customerName", "customerPhone", "customerAddress", "totalPrice", "status", "deliveryType", "createdAt"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "Library events like competitions or scholarship registrations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "deadline": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["Active", "Closed", "Upcoming"] },
+        "type": { "type": "string" },
+        "image": { "type": "string" }
+      },
+      "required": ["id", "title", "description", "status"]
+    },
+    "EventRegistration": {
+      "title": "Event Registration",
+      "description": "User registration for an event",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "eventId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "userPhone": { "type": "string" },
+        "formData": { "type": "object" },
+        "registeredAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "PreBooking": {
+      "title": "Pre-Booking",
+      "description": "Book reservation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "bookId": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "status": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" }
+      }
+    },
+    "Notice": {
+       "title": "Notice",
+       "description": "Library notice",
+       "type": "object",
+       "properties": {
+         "id": { "type": "string" },
+         "title": { "type": "string" },
+         "content": { "type": "string" },
+         "date": { "type": "string", "format": "date-time" }
+       }
+    },
+    "QuizQuestion": {
+      "title": "Quiz Question",
+      "description": "Exam/Quiz question for readers",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "questionText": { "type": "string" },
+        "optionA": { "type": "string" },
+        "optionB": { "type": "string" },
+        "optionC": { "type": "string" },
+        "optionD": { "type": "string" },
+        "correctOption": { "type": "string", "enum": ["A", "B", "C", "D"] },
+        "hint": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "active": { "type": "boolean" }
+      },
+      "required": ["id", "questionText", "optionA", "optionB", "optionC", "optionD", "correctOption"]
+    },
+    "QuizAttempt": {
+      "title": "Quiz Attempt",
+      "description": "User score for completed exam/quiz",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "score": { "type": "number" },
+        "totalQuestions": { "type": "number" },
+        "percentage": { "type": "number" },
+        "date": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "userName", "score", "totalQuestions", "percentage", "date"]
+    },
+    "StudyPracticeContent": {
+      "title": "Study Practice Content",
+      "description": "Educational resource materials for Study Practice module",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "type": { "type": "string", "enum": ["quiz", "lecture", "question_bank", "suggestion"] },
+        "targetCategory": { "type": "string", "enum": ["class-6-8", "ssc-dakhil", "hsc-alim-admission", "bcs-jobs"] },
+        "link": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "title", "type", "targetCategory", "link"]
+    },
+    "StudyPracticeProfile": {
+      "title": "Study Practice Profile",
+      "description": "User custom study targets, notes, and progress for specific category",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "category": { "type": "string" },
+        "dailyGoalHours": { "type": "number" },
+        "notes": { "type": "string" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "category"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": { "schema": "User", "description": "Users" },
+    "/books/{bookId}": { "schema": "Book", "description": "Library books" },
+    "/issues/{issueId}": { "schema": "Issue", "description": "Book issues" },
+    "/donations/{donationId}": { "schema": "Donation", "description": "Donations" },
+    "/donor-members/{donorId}": { "schema": "DonorMember", "description": "Recurring donors" },
+    "/finances/{financeId}": { "schema": "Finance", "description": "Financial records" },
+    "/team/{memberId}": { "schema": "TeamMember", "description": "Staff" },
+    "/posts/{postId}": { "schema": "Post", "description": "Blog posts" },
+    "/messages/{messageId}": { "schema": "Message", "description": "Communications" },
+    "/shop-books/{bookId}": { "schema": "ShopBook", "description": "Shop inventory" },
+    "/shop-orders/{orderId}": { "schema": "Order", "description": "Orders" },
+    "/events/{eventId}": { "schema": "Event", "description": "Events" },
+    "/event_registrations/{regId}": { "schema": "EventRegistration", "description": "Registrations" },
+    "/pre-bookings/{bookingId}": { "schema": "PreBooking", "description": "Reservations" },
+    "/notices/{noticeId}": { "schema": "Notice", "description": "Notices" },
+    "/member-requests/{reqId}": { "schema": "object", "description": "Member level requests" },
+    "/book-requests/{reqId}": { "schema": "object", "description": "New book suggestions" },
+    "/reset-requests/{reqId}": { "schema": "object", "description": "Password reset requests" },
+    "/payments/{payId}": { "schema": "object", "description": "Member payments" },
+    "/donor-payments/{payId}": { "schema": "object", "description": "Donor payments" },
+    "/book-stickers/{stickerId}": { "schema": "object", "description": "Book labeling system" },
+    "/notifications/{notifId}": { "schema": "object", "description": "User notifications" },
+    "/quiz-questions/{questionId}": { "schema": "QuizQuestion", "description": "Quiz/Exam questions" },
+    "/quiz-attempts/{attemptId}": { "schema": "QuizAttempt", "description": "Completed quiz scores" },
+    "/study_practice_contents/{contentId}": { "schema": "StudyPracticeContent", "description": "Study Practice resource files" },
+    "/study_practice_profiles/{profileId}": { "schema": "StudyPracticeProfile", "description": "Academic study profiles" }
+  }
+}

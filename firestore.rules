@@ -1,0 +1,174 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net - Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() { return request.auth != null; }
+    function isVerified() { return isSignedIn() && (request.auth.token.email_verified == true || request.auth.token.firebase.sign_in_provider == 'password'); }
+    
+    function isAdmin() { 
+      return isSignedIn() && (
+        request.auth.token.get('email', '') == 'seneiaislam@gmail.com' || 
+        request.auth.token.get('email', '') == 'admin@library.com' ||
+        request.auth.token.get('email', '') == 'admin_master@library.com' ||
+        request.auth.token.get('email', '') == 'seneiaislam@library.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+    
+    function isSubadmin() {
+      return isSignedIn() && (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'subadmin');
+    }
+
+    function isVisitorAdmin() {
+      return isSignedIn() && (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'visitor_admin');
+    }
+
+    function isIssueAdmin() {
+      return isSignedIn() && (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'issue_admin');
+    }
+    
+    function isKiosk() {
+      return isSignedIn() && (
+        request.auth.token.get('email', '') == 'librarypc@library.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'kiosk')
+      );
+    }
+    
+    function isOwner(userId) { return isSignedIn() && request.auth.uid == userId; }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+
+    // --- Validation Blueprints ---
+    
+    function isValidUser(data) {
+      return data.keys().hasAll(['name', 'role', 'status']) &&
+             data.name is string && data.name.size() <= 100 &&
+             data.role in ['admin', 'subadmin', 'issue_admin', 'reader', 'donor', 'scholarship'] &&
+             data.status in ['active', 'pending', 'inactive', 'suspended'];
+    }
+
+    function isValidBook(data) {
+      return data.title is string && data.title.size() <= 200 &&
+             data.author is string && data.author.size() <= 100;
+    }
+
+    function isValidIssue(data) {
+      return data.bookId is string && data.userId is string &&
+             data.status in ['ISSUED', 'Returned', 'Issued', 'returned'];
+    }
+
+    // --- Collection Rules ---
+
+    // Users
+    match /users/{userId} {
+      allow get: if (isValidId(userId) && isOwner(userId)) || isAdmin() || isSubadmin() || isIssueAdmin() || isVisitorAdmin() || isKiosk();
+      allow list: if isAdmin() || isSubadmin() || isIssueAdmin() || isVisitorAdmin() || isKiosk() || (request.query.limit <= 2);
+      allow create: if (isValidId(userId) && isOwner(userId) && isValidUser(incoming())) || isAdmin() || isSubadmin() || isVisitorAdmin() || (isValidId(userId) && incoming().role == 'scholarship');
+      allow update: if (isAdmin() || isSubadmin()) || (
+        isOwner(userId) && 
+        incoming().role == existing().role && 
+        incoming().status == existing().status &&
+        incoming().diff(existing()).affectedKeys().hasOnly(['name', 'phone', 'address', 'avatar', 'password', 'username', 'memberId', 'email', 'verified', 'paymentMethod', 'paymentNumber', 'trxId', 'feeAmount', 'createdAt', 'serverCreatedAt'])
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Books
+    match /books/{bookId} {
+      allow read: if true;
+      allow create: if isAdmin() || isSubadmin();
+      allow update: if isAdmin() || isSubadmin() || isIssueAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Issues
+    match /issues/{issueId} {
+      allow read: if isAdmin() || isSubadmin() || isIssueAdmin() || isVisitorAdmin() || isKiosk() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isAdmin() || isSubadmin() || isIssueAdmin() || isKiosk();
+      allow update: if isAdmin() || isSubadmin() || isIssueAdmin() || isKiosk() || (
+        isSignedIn() && 
+        existing().userId == request.auth.uid && 
+        incoming().diff(existing()).affectedKeys().hasOnly(['returnRequested', 'updatedAt', 'extendRequested'])
+      );
+      allow delete: if isAdmin();
+    }
+
+    // Pre-bookings
+    match /pre-bookings/{bookingId} {
+      allow read: if isAdmin() || isSubadmin() || isVisitorAdmin() || isIssueAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid;
+      allow update: if isAdmin() || isIssueAdmin() || (isSignedIn() && existing().userId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly(['status']) && existing().status == 'Pending');
+      allow delete: if isAdmin() || isIssueAdmin();
+    }
+
+    // Shop Books & Orders
+    match /shop-books/{bookId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+    match /shop-orders/{id} {
+      allow read: if isAdmin() || isSubadmin() || isVisitorAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if true;
+      allow update, delete: if isAdmin();
+    }
+
+    // Messages
+    match /messages/{messageId} {
+      allow read: if isAdmin() || isSubadmin() || isVisitorAdmin() || (isSignedIn() && (resource.data.toUserId == request.auth.uid || resource.data.fromUserId == request.auth.uid));
+      allow create: if isSignedIn();
+      allow update: if isAdmin() || isSubadmin() || (isSignedIn() && existing().toUserId == request.auth.uid && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'isRead']));
+      allow delete: if isAdmin() || isSubadmin();
+    }
+
+    // Finances
+    match /finances/{id} {
+      allow read: if isAdmin() || isSubadmin() || isIssueAdmin() || isVisitorAdmin() || isKiosk();
+      allow write: if isAdmin() || isSubadmin();
+    }
+
+    // Notifications
+    match /notifications/{id} {
+      allow read: if isAdmin() || isSubadmin() || isVisitorAdmin() || isIssueAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow write: if isAdmin() || isSubadmin();
+    }
+
+    // Settings
+    match /settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Public Collections
+    match /notices/{id} { allow read: if true; allow write: if isAdmin() || isSubadmin(); }
+    match /events/{id} { allow read: if true; allow write: if isAdmin() || isSubadmin(); }
+    match /scholarship_applications/{id} { allow read, write: if true; }
+    match /event_registrations/{id} { allow read, write: if true; }
+    match /team/{id} { allow read: if true; allow write: if isAdmin() || isSubadmin(); }
+    match /posts/{id} { allow read: if true; allow write: if isAdmin() || isSubadmin(); }
+    match /donor-members/{id} { allow read: if true; allow write: if isAdmin() || isSubadmin(); }
+    match /donations/{id} { allow read: if true; allow create: if true; allow update, delete: if isAdmin() || isSubadmin(); }
+
+    // Admin-only Collections
+    match /member-requests/{id} { 
+      allow read: if isAdmin() || isSubadmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isSignedIn() && incoming().userId == request.auth.uid;
+      allow update, delete: if isAdmin() || isSubadmin() || (isSignedIn() && existing().userId == request.auth.uid);
+    }
+    match /book-requests/{id} { allow read: if isAdmin() || isSubadmin() || isVisitorAdmin() || isIssueAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid); allow create: if isSignedIn(); allow update, delete: if isAdmin() || isSubadmin() || isIssueAdmin(); }
+    match /reset-requests/{id} { allow read: if isAdmin() || isSubadmin() || isVisitorAdmin() || isIssueAdmin(); allow create: if true; allow update, delete: if isAdmin() || isSubadmin() || isIssueAdmin(); }
+    match /payments/{id} { allow read: if isAdmin() || isSubadmin() || isVisitorAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid); allow create: if isSignedIn(); allow update, delete: if isAdmin() || isSubadmin(); }
+    match /donor-payments/{id} { allow read: if isAdmin() || isSubadmin() || isVisitorAdmin(); allow write: if isAdmin() || isSubadmin(); }
+    match /book-stickers/{id} { allow read: if isAdmin() || isSubadmin() || isVisitorAdmin(); allow write: if isAdmin() || isSubadmin(); }
+    match /quiz-questions/{id} { allow read: if true; allow write: if isAdmin() || isSubadmin(); }
+    match /quiz-attempts/{id} { allow read, create: if true; allow update, delete: if isAdmin() || isSubadmin(); }
+    match /study_practice_contents/{id} { allow read: if true; allow write: if isAdmin() || isSubadmin(); }
+    match /study_practice_profiles/{id} { allow read: if true; allow write: if isSignedIn(); }
+    match /test/{id} { allow read: if true; }
+  }
+}

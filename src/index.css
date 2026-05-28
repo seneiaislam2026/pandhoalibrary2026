@@ -1,0 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700;800;900&text=০১২৩৪৫৬৭৮৯');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Noto Sans Bengali", "Hind Siliguri", "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-bengali: "Noto Sans Bengali", "Hind Siliguri", sans-serif;
+  --font-mono: "Outfit", ui-monospace, monospace;
+
+  --shadow-box: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-box-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  
+  --animate-float: float 3s ease-in-out infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+}
+
+body, .font-bengali {
+  line-height: 1.6; /* Better vertical room for Hind Siliguri ascenders */
+}
+
+/* Fix for Hind Siliguri numeral '১' clipping issue */
+.font-bengali [class*="text-"], 
+.font-bengali span,
+.font-bengali div,
+.font-bengali p,
+.font-bengali h1,
+.font-bengali h2,
+.font-bengali h3 {
+  padding-bottom: 0.35rem; /* Increased padding */
+  padding-top: 0.1rem; /* Added slight top padding */
+}
+
+/* Ensure large numbers in Hind Siliguri don't clip */
+.font-bengali .text-5xl, 
+.font-bengali .text-6xl, 
+.font-bengali .text-4xl {
+  line-height: normal;
+  padding-bottom: 0.5rem;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.markdown-body p {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+.markdown-body p:last-child {
+  margin-bottom: 0;
+}
+.markdown-body ul {
+  list-style-type: disc;
+  padding-left: 1.25rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+.markdown-body ol {
+  list-style-type: decimal;
+  padding-left: 1.25rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+.markdown-body li::marker {
+  color: #8b5cf6;
+}
+.markdown-body strong {
+  font-weight: 700;
+  color: #312e81;
+}
+.dark .markdown-body strong {
+  color: #c7d2fe;
+}
+.markdown-body a {
+  color: #4f46e5;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.dark .markdown-body a {
+  color: #818cf8;
+}
+
+/* Custom print styles to handle browser printing cleanly */
+@media print {
+  body, html, #root {
+    background-color: white !important;
+    background: white !important;
+    color: black !important;
+  }
+  
+  .no-print, 
+  header, 
+  nav, 
+  aside, 
+  footer, 
+  button, 
+  .cursor-pointer,
+  [role="navigation"], 
+  .fixed.bottom-0 {
+    display: none !important;
+    height: 0 !important;
+    width: 0 !important;
+    overflow: hidden !important;
+    visibility: hidden !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    box-shadow: none !important;
+  }
+
+  /* Reveal print-sheet */
+  .print-sheet {
+    display: block !important;
+    visibility: visible !important;
+  }
+}
